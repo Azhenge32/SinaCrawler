@@ -7,13 +7,22 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class CommentCrawler {
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) {
+		CommentCrawler crawler = new CommentCrawler();
+
+	}
+	public void login() {
+
+	}
+
+	public static void f() throws Exception{
 		//URL url = new URL("http://weibo.com/ou2h1qing?is_hot=1");
 		//URL url = new URL("http://www.baidu.com");
+		//	URL url = new URL("http://weibo.com/login.php");
 		URL url = new URL("http://weibo.com/login.php");
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setDoOutput(true);
-		printConnectionInfo(connection);
+		//printConnectionInfo(connection);
 		//connectionInfo(connection);
 		int responseCode = connection.getResponseCode();
 		if (200 == responseCode) {
@@ -28,6 +37,18 @@ public class CommentCrawler {
 			}
 			String content = new String(baos.toByteArray(),"utf-8");
 			System.out.println(content);
+		} else if (responseCode == 301) {
+			String location = connection.getHeaderField("Location");
+			System.out.println(location);
+
+			url = new URL(location);
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(true);
+
+			responseCode = connection.getResponseCode();
+			if (responseCode == 200) {
+				printConnectionInfo(connection);
+			}
 		}
 	}
 
@@ -43,5 +64,6 @@ public class CommentCrawler {
 		System.out.println("ContentLengthLong: " + connection.getContentLengthLong());
 		System.out.println("ContentEncoding: " + connection.getContentEncoding());
 		System.out.println("ContentType: " + connection.getContentType());
+
 	}
 }
